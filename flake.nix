@@ -28,7 +28,6 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-
       perSystem = {
         pkgs,
         system,
@@ -48,8 +47,9 @@
             ${config.pre-commit.installationScript}
           '';
 
-          buildInputs = [
-            pkgs.R
+          buildInputs = with pkgs; [
+            R
+            rPackages.ggplot2
           ];
         };
       };
