@@ -15,12 +15,12 @@ print(paste("median", data_median))
 # Frequency Data
 print("FREQUENCY DATA::::::::")
 data <- data.frame(
-  ages = c(18:30),
+  age = c(18:30),
   freq = c(18, 12, 19, 19, 28, 38, 28, 10, 10, 8, 11, 5, 8)
 )
 
-data_mean <- sum(data$ages * data$freq) / sum(data$freq)
-data_mode <- data$ages[data$freq == max(data$freq)]
+data_mean <- sum(data$age * data$freq) / sum(data$freq)
+data_mode <- data$age[data$freq == max(data$freq)]
 data_median <- median(rep(data$age, data$freq))
 
 print(paste("mean", round(data_mean, digits = 3)))
