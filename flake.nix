@@ -25,6 +25,7 @@
           # dependencies / R libraries
           pkgs.rPackages.ggplot2
           pkgs.rPackages.languageserver
+          pkgs.rPackages.BSDA
         ];
       };
     });
