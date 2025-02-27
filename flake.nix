@@ -1,57 +1,32 @@
 {
-  description = "A Nix-flake-based Java development environment";
+  description = "A devShell for R";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-
-    git-hooks-nix = {
-      url = "github:cachix/git-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
-  outputs = {flake-parts, ...} @ inputs:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      imports = [
-        inputs.git-hooks-nix.flakeModule
-      ];
+  outputs = {
+    self,
+    nixpkgs,
+    ...
+  }: let
+    systems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
+    forAllSystems = f:
+      nixpkgs.lib.genAttrs systems (
+        system:
+          f (import nixpkgs {inherit system;})
+      );
+  in {
+    devShells = forAllSystems (pkgs: {
+      default = pkgs.mkShell {
+        buildInputs = [
+          pkgs.R
 
-      flake = {
-        # original stuff? idk what this does just yet
+          # dependencies / R libraries
+          pkgs.rPackages.ggplot2
+          pkgs.rPackages.languageserver
+        ];
       };
-
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
-      perSystem = {
-        pkgs,
-        system,
-        config,
-        ...
-      }: {
-        pre-commit = {
-          check.enable = true;
-          settings.hooks = {
-            alejandra.enable = true;
-            # looks like there is no formatter for R :)
-          };
-        };
-
-        devShells.default = pkgs.mkShell {
-          shellHook = ''
-            ${config.pre-commit.installationScript}
-          '';
-
-          buildInputs = with pkgs; [
-            R
-            rPackages.ggplot2
-          ];
-        };
-      };
-    };
+    });
+  };
 }
