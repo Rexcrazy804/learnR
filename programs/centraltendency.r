@@ -1,4 +1,3 @@
-# rawdata
 print("RAW DATA::::::::")
 data <- c(12, 2, 3, 1, 3, 4, 1, 2, 3, 3, 10, 12, 1, 7, 4, 8, 9, 10)
 data_mean <- mean(data)
@@ -12,7 +11,6 @@ print(paste("mean", round(data_mean, digits = 3)))
 print(paste("mode", data_mode))
 print(paste("median", data_median))
 
-# Frequency Data
 print("FREQUENCY DATA::::::::")
 data <- data.frame(
   age = c(18:30),
@@ -26,3 +24,44 @@ data_median <- median(rep(data$age, data$freq))
 print(paste("mean", round(data_mean, digits = 3)))
 print(paste("mode", data_mode))
 print(paste("median", data_median))
+
+print("GROUPED DATA::::::::")
+data <- data.frame(
+  mid_x = seq(17, 42, by = 5),
+  freq = c(4, 20, 38, 24, 10, 4)
+)
+
+data_mean <- sum(data$mid_x * data$freq) / sum(data$freq)
+
+# mode
+# h -> class width
+# L -> lower bound of modal class
+# f_1 -> frequency of modal class
+# f_0 -> frequency of class preceeding modal class
+# f_2 -> frequency of class succeeding modal class
+h <- 5
+modal_class_index <- which(data$freq == max(data$freq))
+f_1 <- data$freq[modal_class_index]
+f_0 <- data$freq[modal_class_index - 1]
+f_2 <- data$freq[(modal_class_index + 1)]
+frequency_ratio <- (f_1 - f_0) / ((2 * f_1) - (f_0 + f_2))
+L <- data$mid_x[modal_class_index] - h / 2 # nolint
+data_mode <- L + (frequency_ratio * h)
+
+# median
+# n -> sum of frequencies
+# L -> lower bound of median class
+# f -> frequency of median class
+# cf -> cumulative frequency of the class preceeding the median class
+# h -> class width
+data_cumsum <- cumsum(data$freq)
+n <- sum(data$freq)
+median_class_index <- min(which(data_cumsum >= n / 2))
+L <- data$mid_x[median_class_index] - (h / 2) # nolint
+f <- data$freq[median_class_index]
+cf <- data_cumsum[median_class_index - 1]
+data_median <- L + ((n / 2 - cf) / f) * h
+
+print(paste("mean", round(data_mean, digits = 3)))
+print(paste("mode", round(data_mode, digits = 3)))
+print(paste("median", round(data_median, digits = 3)))
