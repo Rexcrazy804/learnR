@@ -1,3 +1,12 @@
+# make a function to avoid repetition
+# why did I not think of this sooner
+# fricking R dulling my programmer instincts :kekw:
+print_cts <- function() {
+  print(paste("mean", round(data_mean, digits = 2)))
+  print(paste("mode", round(data_mode, digits = 2)))
+  print(paste("median", round(data_median, digits = 2)))
+}
+
 print("RAW DATA::::::::")
 data <- c(12, 2, 3, 1, 3, 4, 1, 2, 3, 3, 10, 12, 1, 7, 4, 8, 9, 10)
 data_mean <- mean(data)
@@ -6,10 +15,7 @@ data_median <- median(data)
 data_unique <- unique(data)
 data_table <- table(data)
 data_mode <- data_unique[data_table == max(data_table)]
-
-print(paste("mean", round(data_mean, digits = 3)))
-print(paste("mode", data_mode))
-print(paste("median", data_median))
+print_cts()
 
 print("FREQUENCY DATA::::::::")
 data <- data.frame(
@@ -17,13 +23,19 @@ data <- data.frame(
   freq = c(18, 12, 19, 19, 28, 38, 28, 10, 10, 8, 11, 5, 8)
 )
 
-data_mean <- sum(data$age * data$freq) / sum(data$freq)
-data_mode <- data$age[data$freq == max(data$freq)]
-data_median <- median(rep(data$age, data$freq))
+# old method
+# data_mean <- sum(data$age * data$freq) / sum(data$freq) # nolint
+# data_mode <- data$age[data$freq == max(data$freq)] # nolint
+# data_median <- median(rep(data$age, data$freq)) # nolint
 
-print(paste("mean", round(data_mean, digits = 3)))
-print(paste("mode", data_mode))
-print(paste("median", data_median))
+# improved
+rep_data <- rep(data$age, data$freq)
+data_mean <- mean(rep_data)
+data_median <- median(rep_data)
+# here the which method returns the index as the max(data$freq) == data$freq
+# will return a boolean vector
+data_mod <- data$age[which(max(data$freq) == data$freq)]
+print_cts()
 
 print("GROUPED DATA::::::::")
 data <- data.frame(
@@ -61,7 +73,4 @@ L <- data$mid_x[median_class_index] - (h / 2) # nolint
 f <- data$freq[median_class_index]
 cf <- data_cumsum[median_class_index - 1]
 data_median <- L + ((n / 2 - cf) / f) * h
-
-print(paste("mean", round(data_mean, digits = 3)))
-print(paste("mode", round(data_mode, digits = 3)))
-print(paste("median", round(data_median, digits = 3)))
+print_cts()
